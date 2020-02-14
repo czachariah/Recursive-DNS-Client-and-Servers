@@ -1,6 +1,5 @@
 import threading
 import time
-import random
 import socket
 import sys
 
@@ -34,6 +33,7 @@ csockid.send(msg.encode('utf-8'))
 
 data_from_client = csockid.recv(500)
 print(data_from_client)
+
 
 
 # Close the server socket
