@@ -4,7 +4,7 @@ import sys
 
 # need to make sure that the port number is given as an argument
 if len(sys.argv) != 2:
-    print("ERROR: Need to include a listen port argument.")
+    print("[RS]: ERROR: Need to include a listen port argument.")
     exit()
 
 
@@ -27,7 +27,7 @@ try:
     for line in file:
         count = count + 1
 except IOError:
-    print("ERROR opening file: PROJI-DNSRS.txt")
+    print("[RS]: ERROR opening file: PROJI-DNSRS.txt")
     exit()
 
 # create the table and initialize it
@@ -45,7 +45,7 @@ try:
            dataList.append(word)
 
 except IOError:
-    print("ERROR opening file: PROJI-DNSRS.txt")
+    print("[RS]: ERROR opening file: PROJI-DNSRS.txt")
     exit()
 file.close()
 
@@ -56,9 +56,9 @@ for word in dataList:
 # create the socket for the rs server
 try:
     ss = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    print("[S]: Server socket created")
+    print("[RS]: Server socket created")
 except socket.error as err:
-    print('socket open error: {}\n'.format(err))
+    print('[RS]: socket open error: {}\n'.format(err))
     exit()
 
 # bind the socket to the port to listen for the client
@@ -66,32 +66,32 @@ server_binding = ('', int(sys.argv[1]))
 ss.bind(server_binding)
 ss.listen(1)
 host = socket.gethostname()
-print("[S]: Server host name is {}".format(host))
+print("[RS]: Server host name is {}".format(host))
 localhost_ip = (socket.gethostbyname(host))
-print("[S]: Server IP address is {}".format(localhost_ip))
+print("[RS]: Server IP address is {}".format(localhost_ip))
 csockid, addr = ss.accept()
-print ("[S]: Got a connection request from a client at {}".format(addr))
+print ("[RS]: Got a connection request from a client at {}".format(addr))
 
 found = False
 # get list of host names to check for
 while True:
     found = False
     data_from_client = csockid.recv(500)
-    print("Connection recieved: {}".format(data_from_client.decode('utf-8')))
+    print("[RS]: Connection received. Looking up : {}".format(data_from_client.decode('utf-8')) + " ...")
 
     # this is the code from the client that tells this server that there are no more host names to look up
     if data_from_client == "DONE":
-        msg = "Cancelling Connection ... "
+        msg = "Look up done. Cancelling Connection ... "
         csockid.send(msg.encode('utf-8'))
         break
-
+    # look through the table and see if the RS server has the IP address for the host name
     for word in range(count-1):
         if data_from_client == DNSTable[word][0]:
             msg = DNSTable[word][0] + " " + DNSTable[word][1] + " " + DNSTable[word][2]
             csockid.send(msg.encode('utf-8'))
             found = True
 
-    # message to the client to look to the TS server to find the IP
+    # message (host name of the TS server) to the client to look to the TS server to find the IP
     if not found:
         msg = DNSTable[count-1][0] + " " + DNSTable[count-1][1] + " " + DNSTable[count-1][2]
         csockid.send(msg.encode('utf-8'))

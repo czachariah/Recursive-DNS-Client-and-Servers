@@ -40,12 +40,14 @@ rs.connect(server_binding)
 for x in listOfHostnames:
     message = x
     rs.send(message.encode('utf-8'))
+    print("[C]: Sending host name " + message + " to RS server for IP lookup ...")
     data_from_server = rs.recv(500)
     print("[C]: Data received from RS server: {}".format(data_from_server.decode('utf-8')))
 
     # this means that we need to connect to the TS server to try to find the IP
-    if " - NS" in data_from_server:
-        print("Need to connect to TS Server!")
+    if " NS" in data_from_server:
+        print("[C]: Connecting to the TS Server ...")
+    print("\n")
 
 # this message is to let the RS server know we are done trying to find IPs
 message = "DONE"
