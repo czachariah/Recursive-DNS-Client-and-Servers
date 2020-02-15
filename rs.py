@@ -15,7 +15,7 @@ def insertIntoTable(count,word,table):
                 table[i][j] = word
                 return
 
-#store the URLs and IPs from PROJI-DNSRS.txt
+# store the URLs and IPs from PROJI-DNSRS.txt
 DNSTable = []
 count = 0
 
@@ -71,12 +71,13 @@ csockid, addr = ss.accept()
 print ("[S]: Got a connection request from a client at {}".format(addr))
 
 found = False
-#get list of hostnames to check for
+# get list of host names to check for
 while True:
     found = False
     data_from_client = csockid.recv(500)
     print("Connection recieved: {}".format(data_from_client.decode('utf-8')))
 
+    # this is the code from the client that tells this server that there are no more host names to look up
     if data_from_client == "DONE":
         msg = "Cancelling Connection ... "
         csockid.send(msg.encode('utf-8'))
@@ -88,20 +89,10 @@ while True:
             csockid.send(msg.encode('utf-8'))
             found = True
 
+    # message to the client to look to the TS server to find the IP
     if not found:
         msg = DNSTable[count-1][0] + " " + DNSTable[count-1][1] + " " + DNSTable[count-1][2]
         csockid.send(msg.encode('utf-8'))
-
-
-
-# receive messages from the client
-
-#data_from_client = csockid.recv(500)
-#print(data_from_client)
-
-# send back how are you
-#msg = "How are you buddy?"
-#csockid.send(msg.encode('utf-8'))
 
 # Close the server socket
 ss.close()

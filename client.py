@@ -29,28 +29,25 @@ except socket.error as err:
     exit()
 
 # Define the port on which you want to connect to the rs server
-port = 50000
-localhost_addr = socket.gethostbyname(socket.gethostname())
+port = int(sys.argv[2])
+rs_addr = socket.gethostbyname(sys.argv[1])
 
 # connect to the server on local machine
-server_binding = (localhost_addr, port)
+server_binding = (rs_addr, port)
 rs.connect(server_binding)
 
-# Receive data from the server
-#data_from_server = cs.recv(500)
-#print("[C]: Data received from server: {}".format(data_from_server.decode('utf-8')))
-
-#send hostnames one by one
+# send host names one by one
 for x in listOfHostnames:
     message = x
     rs.send(message.encode('utf-8'))
     data_from_server = rs.recv(500)
     print("[C]: Data received from RS server: {}".format(data_from_server.decode('utf-8')))
 
+    # this means that we need to connect to the TS server to try to find the IP
     if " - NS" in data_from_server:
         print("Need to connect to TS Server!")
 
-
+# this message is to let the RS server know we are done trying to find IPs
 message = "DONE"
 rs.send(message.encode('utf-8'))
 data_from_server = rs.recv(500)
@@ -60,6 +57,7 @@ print("[C]: Data received from RS server: {}".format(data_from_server.decode('ut
 rs.close()
 exit()
 
+# main
 if __name__ == "__main__":
     t2 = threading.Thread(name='client')
     t2.start()
