@@ -2,7 +2,10 @@ import threading
 import socket
 import sys
 
-#deal with arguments here
+# need to make sure that correct arguments are given: rsHostname, rsListenPort, tsListenPort
+if len(sys.argv) != 4:
+    print("ERROR: Need to include the correct amount of arguments")
+    exit()
 
 #get list of hostnames to look up
 listOfHostnames = list()
@@ -42,13 +45,16 @@ for x in listOfHostnames:
     message = x
     rs.send(message.encode('utf-8'))
     data_from_server = rs.recv(500)
-    print("[C]: Data received from server: {}".format(data_from_server.decode('utf-8')))
+    print("[C]: Data received from RS server: {}".format(data_from_server.decode('utf-8')))
+
+    if " - NS" in data_from_server:
+        print("Need to connect to TS Server!")
 
 
 message = "DONE"
 rs.send(message.encode('utf-8'))
 data_from_server = rs.recv(500)
-print("[C]: Data received from server: {}".format(data_from_server.decode('utf-8')))
+print("[C]: Data received from RS server: {}".format(data_from_server.decode('utf-8')))
 
 # close the client socket
 rs.close()
