@@ -1,7 +1,50 @@
 import threading
-import time
 import socket
 import sys
+
+# function used to insert words into the data table
+def insertIntoTable(count,word,table):
+    for i in range(count):
+        for j in range(3):
+            if table[i][j] == ".":
+                table[i][j] = word
+                return
+
+#store the URLs and IPs from PROJI-DNSRS.txt
+DNSTable = []
+count = 0
+
+# get the number of lines in the DNS list
+try:
+    file = open("PROJI-DNSRS.txt", "r")
+    for line in file:
+        count = count + 1
+except IOError:
+    print("ERROR opening file: PROJI-DNSRS.txt")
+    exit()
+
+# create the table and initialize it
+for i in range(count):
+    DNSTable.append([])
+    for j in range(3):
+        DNSTable[i].append(".")
+
+# seperate the lines into words and store each word into a list
+dataList = list()
+try:
+   file = open("PROJI-DNSRS.txt","r")
+   for line in file:
+       for word in line.replace("\r", "").replace("\n", "").split():
+           dataList.append(word)
+
+except IOError:
+    print("ERROR opening file: PROJI-DNSRS.txt")
+    exit()
+file.close()
+
+# populate DNS Table with the list of words
+for word in dataList:
+    insertIntoTable(count, word, DNSTable)
 
 # need to make sure that the port number is given as an argument
 if len(sys.argv) != 2:
@@ -27,14 +70,31 @@ print("[S]: Server IP address is {}".format(localhost_ip))
 csockid, addr = ss.accept()
 print ("[S]: Got a connection request from a client at {}".format(addr))
 
-# send a intro message to the client.
-msg = "Welcome to CS 352!"
-csockid.send(msg.encode('utf-8'))
+#get list of hostnames to check for
+while True:
+    data_from_client = csockid.recv(500)
+    print("Connection recieved: {}".format(data_from_client.decode('utf-8')))
+    msg = "Got it."
+    csockid.send(msg.encode('utf-8'))
 
-data_from_client = csockid.recv(500)
-print(data_from_client)
+    if data_from_client == "DONE":
+        break
+
+    for word in range(count-1):
+        if data_from_client == DNSTable[word][0]:
+            print("Found in table! Place: ", word)
 
 
+
+
+# receive messages from the client
+
+#data_from_client = csockid.recv(500)
+#print(data_from_client)
+
+# send back how are you
+#msg = "How are you buddy?"
+#csockid.send(msg.encode('utf-8'))
 
 # Close the server socket
 ss.close()
@@ -43,3 +103,4 @@ exit()
 if __name__ == "__main__":
     t1 = threading.Thread(name='server')
     t1.start()
+
