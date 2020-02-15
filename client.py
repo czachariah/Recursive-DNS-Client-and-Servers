@@ -7,7 +7,7 @@ if len(sys.argv) != 4:
     print("ERROR: Need to include the correct amount of arguments")
     exit()
 
-#get list of hostnames to look up
+# get list of hostnames to look up
 listOfHostnames = list()
 try:
    file = open("PROJI-HNS.txt","r")

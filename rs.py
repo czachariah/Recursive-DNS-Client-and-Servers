@@ -7,6 +7,7 @@ if len(sys.argv) != 2:
     print("ERROR: Need to include a listen port argument.")
     exit()
 
+
 # function used to insert words into the data table
 def insertIntoTable(count,word,table):
     for i in range(count):
@@ -14,6 +15,7 @@ def insertIntoTable(count,word,table):
             if table[i][j] == ".":
                 table[i][j] = word
                 return
+
 
 # store the URLs and IPs from PROJI-DNSRS.txt
 DNSTable = []
@@ -34,7 +36,7 @@ for i in range(count):
     for j in range(3):
         DNSTable[i].append(".")
 
-# seperate the lines into words and store each word into a list
+# separate the lines into words and store each word into a list
 dataList = list()
 try:
    file = open("PROJI-DNSRS.txt","r")
