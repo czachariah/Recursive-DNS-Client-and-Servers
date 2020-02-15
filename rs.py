@@ -13,6 +13,8 @@ def insertIntoTable(count,word,table):
     for i in range(count):
         for j in range(3):
             if table[i][j] == ".":
+                if j == 0:
+                    table[i][j] = word.lower()
                 table[i][j] = word
                 return
 
@@ -101,6 +103,6 @@ ss.close()
 exit()
 
 if __name__ == "__main__":
-    t1 = threading.Thread(name='server')
+    t1 = threading.Thread(name='RSserver')
     t1.start()
 
