@@ -6,7 +6,8 @@ import sys
 if len(sys.argv) != 4:
     print("ERROR: Need to include the correct amount of arguments")
     exit()
-
+#open file
+f=open("RESOLVED.txt", "a+")
 
 # function used to connect to the TS server for IP lookup
 def lookUpInTS(hostToLookUp, TShostName, TSPort):
@@ -33,6 +34,7 @@ def lookUpInTS(hostToLookUp, TShostName, TSPort):
     print("[C]: Sending host name " + message + " to TS server for IP lookup ...")
 
     data_from_TSserver = ts.recv(500)
+    f.write(data_from_TSserver.decode('utf-8') + "\n")
     print("[C]: Data received from TS server: {}".format(data_from_TSserver.decode('utf-8')))
 
     # close the socket
@@ -101,6 +103,8 @@ for x in listOfHostnames:
     rs.send(message.encode('utf-8'))
     print("[C]: Sending host name " + message + " to RS server for IP lookup ...")
     data_from_server = rs.recv(500)
+
+
     print("[C]: Data received from RS server: {}".format(data_from_server.decode('utf-8')))
 
     # this means that we need to connect to the TS server to try to find the IP
@@ -113,7 +117,8 @@ for x in listOfHostnames:
 
         TSHostName = getTSHostName[0]
         lookUpInTS(message, TSHostName, sys.argv[3])
-
+    else:
+        f.write(data_from_server.decode('utf-8')+ "\n")
     print("\n")
 
 # this message is to let the RS server know we are done trying to find IPs
@@ -126,6 +131,7 @@ print("[C]: Data received from RS server: {}".format(data_from_server.decode('ut
 closeTS(TSHostName, sys.argv[3])
 
 # close the client socket
+f.close()
 rs.close()
 exit()
 
