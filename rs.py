@@ -13,8 +13,6 @@ def insertIntoTable(count,word,table):
     for i in range(count):
         for j in range(3):
             if table[i][j] == ".":
-                if j == 0:
-                    table[i][j] = word.lower()
                 table[i][j] = word
                 return
 
@@ -88,7 +86,8 @@ while True:
         break
     # look through the table and see if the RS server has the IP address for the host name
     for word in range(count-1):
-        if data_from_client == DNSTable[word][0]:
+        hostToCheck = DNSTable[word][0].lower()
+        if data_from_client == hostToCheck:
             msg = DNSTable[word][0] + " " + DNSTable[word][1] + " " + DNSTable[word][2]
             csockid.send(msg.encode('utf-8'))
             found = True
