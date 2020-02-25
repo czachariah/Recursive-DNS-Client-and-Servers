@@ -1,7 +1,7 @@
 import threading
 import socket
 import sys
-
+import os
 # need to make sure that correct arguments are given: rsHostname, rsListenPort, tsListenPort
 if len(sys.argv) != 4:
     print("ERROR: Need to include the correct amount of arguments")
@@ -17,7 +17,12 @@ if TSPortNum <= 1023:
     print("ERROR: Need to make sure that the port numbers are > 1023")
     exit()
 
-# open file
+# open file]
+dir_name = os.path.dirname(os.path.abspath(__file__))
+resolved = os.path.join(dir_name, "RESOLVED" + "." + "txt")
+
+if os.path.exists(resolved):
+    os.remove(resolved)
 f=open("RESOLVED.txt", "a+")
 
 
