@@ -7,6 +7,10 @@ if len(sys.argv) != 2:
     print("[TS]: ERROR: Need to include a listen port argument.")
     exit()
 
+TSPortNum = int(sys.argv[1])
+if TSPortNum <= 1023:
+    print("ERROR: Need to make sure that the port numbers are > 1023")
+    exit()
 
 # function used to insert words into the data table
 def insertIntoTable(count,word,table):

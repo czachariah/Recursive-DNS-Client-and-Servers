@@ -6,8 +6,20 @@ import sys
 if len(sys.argv) != 4:
     print("ERROR: Need to include the correct amount of arguments")
     exit()
-#open file
+
+RSPortNum = int(sys.argv[2])
+if RSPortNum <= 1023:
+    print("ERROR: Need to make sure that the port numbers are > 1023")
+    exit()
+
+TSPortNum = int(sys.argv[3])
+if TSPortNum <= 1023:
+    print("ERROR: Need to make sure that the port numbers are > 1023")
+    exit()
+
+# open file
 f=open("RESOLVED.txt", "a+")
+
 
 # function used to connect to the TS server for IP lookup
 def lookUpInTS(hostToLookUp, TShostName, TSPort):
