@@ -154,5 +154,5 @@ exit()
 
 # main
 if __name__ == "__main__":
-    t2 = threading.Thread(name='client')
-    t2.start()
+    Client = threading.Thread(name='client')
+    Client.start()

@@ -111,6 +111,6 @@ ss.close()
 exit()
 
 if __name__ == "__main__":
-    t1 = threading.Thread(name='TSserver')
-    t1.start()
+    TS = threading.Thread(name='TSserver')
+    TS.start()
 
