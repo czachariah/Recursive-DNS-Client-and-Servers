@@ -96,32 +96,34 @@ except IOError:
     exit()
 file.close()
 
-# create a sockets to connect with both the RS and TS servers
-try:
-    rs = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    print("[C]: Socket created to connect to RS server.")
-except socket.error as err:
-    print('Socket Open Error: {} \n'.format(err))
-    exit()
-
-# Define the port on which you want to connect to the rs server
-port = int(sys.argv[2])
-rs_addr = socket.gethostbyname(sys.argv[1])
-
-# connect to the server on local machine
-server_binding = (rs_addr, port)
-rs.connect(server_binding)
-print("[C]: Connected to RS server.\n")
 
 TSHostName = "something"
 # send host names one by one
 for x in listOfHostnames:
+
+    # create socket to connect with RS server
+    try:
+        rs = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        print("[C]: Socket created to connect to RS server.")
+    except socket.error as err:
+        print('Socket Open Error: {} \n'.format(err))
+        exit()
+
+    # Define the port on which you want to connect to the rs server
+    port = int(sys.argv[2])
+    rs_addr = socket.gethostbyname(sys.argv[1])
+
+    # connect to the server on the local machine
+    RS_server_binding = (rs_addr, port)
+    rs.connect(RS_server_binding)
+    print("[C]; Connected to the RS server.\n")
+
+    # send RS the host name to look up
     message = x.lower()
     rs.send(message.encode('utf-8'))
     print("[C]: Sending host name " + message + " to RS server for IP lookup ...")
+
     data_from_server = rs.recv(500)
-
-
     print("[C]: Data received from RS server: {}".format(data_from_server.decode('utf-8')))
 
     # this means that we need to connect to the TS server to try to find the IP
@@ -135,21 +137,17 @@ for x in listOfHostnames:
         TSHostName = getTSHostName[0]
         lookUpInTS(message, TSHostName, sys.argv[3])
     else:
-        f.write(data_from_server.decode('utf-8')+ "\n")
+        f.write(data_from_server.decode('utf-8') + "\n")
     print("\n")
 
-# this message is to let the RS server know we are done trying to find IPs
-message = "DONE"
-rs.send(message.encode('utf-8'))
-data_from_server = rs.recv(500)
-print("[C]: Data received from RS server: {}".format(data_from_server.decode('utf-8')))
+    # close the socket
+    rs.close()
 
-# close the TS connection as well
-closeTS(TSHostName, sys.argv[3])
 
-# close the client socket
+# not going to close the RS and TS servers ...
+
+# close the file
 f.close()
-rs.close()
 exit()
 
 # main

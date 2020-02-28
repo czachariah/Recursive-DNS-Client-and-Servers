@@ -73,12 +73,15 @@ host = socket.gethostname()
 print("[RS]: Server host name is {}".format(host))
 localhost_ip = (socket.gethostbyname(host))
 print("[RS]: Server IP address is {}".format(localhost_ip))
-csockid, addr = ss.accept()
-print ("[RS]: Got a connection request from a client at {}".format(addr))
+
 
 found = False
 # get list of host names to check for
 while True:
+
+    csockid, addr = ss.accept()
+    print ("[RS]: Got a connection request from a client at {}".format(addr))
+
     found = False
     data_from_client = csockid.recv(500)
     print("[RS]: Connection received. Looking up : {}".format(data_from_client.decode('utf-8')) + " ...")
